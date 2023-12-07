@@ -25,4 +25,3 @@ jobs:
     - run: |
         echo "PROD_ENV=${PROD_ENV}" > .env
         npm ci
-    - run: npm test # Add your test command here
