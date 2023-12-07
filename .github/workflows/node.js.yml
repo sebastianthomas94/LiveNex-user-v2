@@ -25,9 +25,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: |
-        touch .env
-        echo "${{secrets.PROD_ENV}}" > .env
-  
+
         echo "Installing npm dependencies..."
         npm ci
 
