@@ -95,7 +95,7 @@ app.use(express.urlencoded({ extended: true, ...bodyParserOptions }));
 //   });
 // });
 
-app.use(express.static(path.resolve(__dirname, "../views/build")));
+app.use(express.static(path.resolve(__dirname, "./views/build")));
 
 app.post("/user/signin", signinService);
 app.post("/user/signup", signupService);
@@ -131,7 +131,7 @@ app.get("/user/getUpcomingLives", authAndSave, getUpcomingLives);
 app.use("/user/uploadvideo", upload.single("file"), uploadtos3);
 
 app.get('*',(req,res)=>{
-  res.sendFile(path.resolve(__dirname, "../views/build/index.html"))
+  res.sendFile(path.resolve(__dirname, "./views/build/index.html"));
 })
 
 app.listen(process.env.PORT, () =>
