@@ -1,6 +1,13 @@
+import dotenv from "dotenv";
+if (process.env.NODE_ENV == 'prod') {
+  dotenv.config({ path: "./prod.env" });
+}
+else {
+  dotenv.config({ path: "./dev.env" });
+
+}
 import express from "express";
 import path from "path";
-import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import cors from "cors";
 import mongoose from "mongoose";
@@ -44,7 +51,7 @@ import multer from "multer";
 const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
 const __dirname = path.resolve(path.dirname(""));
-dotenv.config({ path: path.join(__dirname, "../.env") });
+
 
 const storage = multer.memoryStorage();
 
@@ -130,10 +137,13 @@ app.post("/user/scheduleinfoupdate", authAndSave, scheduleInfoUpdate);
 app.get("/user/getUpcomingLives", authAndSave, getUpcomingLives);
 app.use("/user/uploadvideo", upload.single("file"), uploadtos3);
 
-app.get('*',(req,res)=>{
+if(process.env.NODE_ENV == 'prod')
+app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, "./views/build/index.html"));
 })
 
-app.listen(process.env.PORT, () =>
-  console.log(`User server started at ${process.env.PORT}`)
+app.listen(process.env.PORT, () => {
+  console.log(`User server started at ${process.env.PORT}`);
+  console.log(`${process.env.SERVER} server is on..`);
+}
 );

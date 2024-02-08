@@ -1,9 +1,18 @@
 import User from "../models/userModel.js";
+import dotenv from "dotenv";
+import path from "path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+if (process.env.NODE_ENV == 'prod') {
+  dotenv.config({path: path.join(__dirname, "../prod.env") });
+}
+else {
+  dotenv.config({ path: path.join(__dirname, "../dev.env")});
+
+}
 import bcrypt from "bcrypt";
 import passport from "passport";
 import { Strategy } from "passport-google-oauth2";
-import path from "path";
-import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { google } from "googleapis";
 import {
@@ -21,9 +30,7 @@ import { access } from "fs";
 import { fbReply } from "../helper/fbHelper.js";
 import { ytReply } from "../helper/ytHelper.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-dotenv.config({ path: path.join(__dirname, "../.env") });
+
 
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
@@ -266,8 +273,8 @@ const youtubeOauthCallback = async (req, res) => {
     res.cookie("jwt", jsonToken).send(`
         <script>
           window.opener.postMessage(${JSON.stringify(
-            json
-          )},"${process.env.FRONT_END}");
+      json
+    )},"${process.env.FRONT_END}");
           window.close();
         </script>
       `);
@@ -333,7 +340,7 @@ const getSubscriptionDetails = (req, res) => {
 
 const scheduleInfoUpdate = (req, res) => {
   const email = req.userEmail;
-  const{youtube, facebook, twitch, iso8601Date} = req.body;
+  const { youtube, facebook, twitch, iso8601Date } = req.body;
   User.findOneAndUpdate({ email },
     {
       $push: {
@@ -348,13 +355,13 @@ const scheduleInfoUpdate = (req, res) => {
     );
 };
 
-const getUpcomingLives = (req, res) =>{
+const getUpcomingLives = (req, res) => {
   const email = req.userEmail;
-  User.findOne({email}).then((result)=>{
+  User.findOne({ email }).then((result) => {
     const upcomingLives = result.upcomingStreams;
     console.log("sending the upcoming lives to client: ", result);
     res.status(200).json(upcomingLives);
-  }).catch((e)=>console.log("error at getpastlives: ", e.message))
+  }).catch((e) => console.log("error at getpastlives: ", e.message))
 }
 
 export {
